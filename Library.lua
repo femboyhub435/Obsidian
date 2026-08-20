@@ -8711,9 +8711,49 @@ do
     end
 end
 
+local FingerPaintFontURL = "https://raw.githubusercontent.com/google/fonts/main/ofl/fingerpaint/FingerPaint-Regular.ttf"
+local FingerPaintFontPath = "Obsidian/fonts/FingerPaint.ttf"
+
+function Library:GetFingerPaintFont()
+    if not getcustomasset or not writefile or not isfile then
+        return Font.fromEnum(Enum.Font.Code)
+    end
+    
+    pcall(function()
+        if not isfolder("Obsidian") then makefolder("Obsidian") end
+        if not isfolder("Obsidian/fonts") then makefolder("Obsidian/fonts") end
+    end)
+    
+    if not isfile(FingerPaintFontPath) then
+        pcall(function()
+            writefile(FingerPaintFontPath, game:HttpGet(FingerPaintFontURL))
+        end)
+    end
+    
+    if isfile(FingerPaintFontPath) then
+        local success, customAsset = pcall(getcustomasset, FingerPaintFontPath)
+        if success and customAsset then
+            return Font.new(customAsset)
+        end
+    end
+    
+    return Font.fromEnum(Enum.Font.Code)
+end
+
 function Library:SetFont(FontFace)
     if typeof(FontFace) == "EnumItem" then
         FontFace = Font.fromEnum(FontFace :: any)
+    elseif typeof(FontFace) == "string" then
+        local FontEnum = pcall(function() return Enum.Font[FontFace] end) and Enum.Font[FontFace]
+        if FontEnum then
+            FontFace = Font.fromEnum(FontEnum)
+        elseif FontFace == "FingerPaint" or FontFace == "Finger Paint" then
+            FontFace = Library:GetFingerPaintFont()
+        elseif FontFace:sub(1, 10) == "rbxassetid" then
+            FontFace = Font.new(FontFace)
+        else
+            FontFace = Font.fromEnum(Enum.Font.Code)
+        end
     end
 
     Library.Scheme.Font = FontFace

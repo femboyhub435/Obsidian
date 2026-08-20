@@ -402,7 +402,7 @@ function ThemeManager:SetDefaultTheme(Theme: any)
         if FontEnum then
             LibraryScheme.Font = Font.fromEnum(FontEnum)
         elseif FontFace == "FingerPaint" or FontFace == "Finger Paint" then
-            LibraryScheme.Font = Font.new("rbxassetid://12187375716")
+            LibraryScheme.Font = Library:GetFingerPaintFont()
         elseif tostring(FontFace):sub(1, 10) == "rbxassetid" then
             LibraryScheme.Font = Font.new(FontFace)
         else
@@ -540,7 +540,7 @@ function ThemeManager:ApplyTheme(ThemeName: string)
             if FontEnum then
                 ThemeManager.Library:SetFont(FontEnum)
             elseif FinalValue == "FingerPaint" or FinalValue == "Finger Paint" then
-                ThemeManager.Library:SetFont(Font.new("rbxassetid://12187375716"))
+                ThemeManager.Library:SetFont(ThemeManager.Library:GetFingerPaintFont())
             elseif tostring(FinalValue):sub(1, 10) == "rbxassetid" then
                 ThemeManager.Library:SetFont(Font.new(FinalValue))
             else
