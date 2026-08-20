@@ -398,7 +398,16 @@ function ThemeManager:SetDefaultTheme(Theme: any)
         FinalTheme.FontFace = FontFace.Name
 
     elseif FontFaceType == "string" then
-        LibraryScheme.Font = Font.fromEnum(Enum.Font[FontFace] :: Enum.Font)
+        local FontEnum = pcall(function() return Enum.Font[FontFace] :: Enum.Font end) and Enum.Font[FontFace] :: Enum.Font
+        if FontEnum then
+            LibraryScheme.Font = Font.fromEnum(FontEnum)
+        elseif FontFace == "FingerPaint" or FontFace == "Finger Paint" then
+            LibraryScheme.Font = Font.new("rbxassetid://12187375716")
+        elseif tostring(FontFace):sub(1, 10) == "rbxassetid" then
+            LibraryScheme.Font = Font.new(FontFace)
+        else
+            LibraryScheme.Font = Font.fromEnum(Enum.Font.Code)
+        end
         FinalTheme.FontFace = FontFace
     
     else
@@ -527,7 +536,16 @@ function ThemeManager:ApplyTheme(ThemeName: string)
         local FinalValue = Value
 
         if Index == "FontFace" then
-            ThemeManager.Library:SetFont(Enum.Font[FinalValue])
+            local FontEnum = pcall(function() return Enum.Font[FinalValue] end) and Enum.Font[FinalValue]
+            if FontEnum then
+                ThemeManager.Library:SetFont(FontEnum)
+            elseif FinalValue == "FingerPaint" or FinalValue == "Finger Paint" then
+                ThemeManager.Library:SetFont(Font.new("rbxassetid://12187375716"))
+            elseif tostring(FinalValue):sub(1, 10) == "rbxassetid" then
+                ThemeManager.Library:SetFont(Font.new(FinalValue))
+            else
+                ThemeManager.Library:SetFont(Enum.Font.Code)
+            end
 
         elseif Index == "BackgroundImage" then
             ThemeManager.Library:SetBackgroundImage(FinalValue)
@@ -634,7 +652,7 @@ function ThemeManager:CreateThemeManager(Themesbox: any)
         Text = "Font Face",
         Default = "Code",
         
-        Values = { "BuilderSans", "Code", "Fantasy", "Gotham", "Jura", "Roboto", "RobotoMono", "SourceSans" },
+        Values = { "BuilderSans", "Code", "Fantasy", "FingerPaint", "Gotham", "Jura", "Roboto", "RobotoMono", "SourceSans" },
         AllowNull = false,
         Multi = false
     })
