@@ -111,6 +111,10 @@ local ThemeManager = {
         ["Material"] = {
             18,
             { FontColor = "eeffff", MainColor = "212121", AccentColor = "82aaff", BackgroundColor = "151515", OutlineColor = "424242", BackgroundImage = "" },
+        },
+        ["Femboy"] = {
+            19,
+            { FontColor = "ffffff", MainColor = "2d1f2e", AccentColor = "ff7ebb", BackgroundColor = "1c121e", OutlineColor = "4d324f", BackgroundImage = "" },
         }
     }
 }
