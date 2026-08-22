@@ -736,7 +736,11 @@ local function monitorKiller(k)
 							facing = checkDir:Dot(diff.Unit) >= dotLimit
 						end
 						if facing then
-							if tog.AntiBait.Value and not fndHb(k) then return end
+							if tog.AntiBait.Value then
+								task.wait(0.03)
+								if not (root.Parent and lRoot.Parent) then return end
+								if not fndHb(k) then return end
+							end
 							if tog.BaitLunge.Value then
 								task.spawn(function()
 									local oldCF = lRoot.CFrame
@@ -981,7 +985,7 @@ table.insert(conns, lp.CharacterAdded:Connect(lstChr))
 local function appBlat()
 	local lChar = lp.Character
 	local lRoot = lChar and lChar:FindFirstChild("HumanoidRootPart")
-	if not lRoot or not tog.AntiBait.Value then return end
+	if not lRoot or not (tog.AntiBait.Value or tog.BaitLunge.Value) then return end
 	local target, dist = getCls()
 	if not target then return end
 	local offsets
