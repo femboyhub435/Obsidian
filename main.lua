@@ -720,6 +720,7 @@ local function monitorKiller(k)
 				task.delay(0.8, function()
 					kAttacking[k] = false
 				end)
+				task.wait(0.07)
 				local lChar = lp.Character
 				local lRoot = lChar and lChar:FindFirstChild("HumanoidRootPart")
 				if lRoot and root.Parent then
