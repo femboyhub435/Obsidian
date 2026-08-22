@@ -992,9 +992,7 @@ local function appBlat()
 	local pos = target.Position + offsets[pIndex]
 	pIndex = pIndex + 1
 	if #offsets < pIndex then pIndex = 1 end
-	local dir = (pos - lRoot.Position).Unit
-	local shake = not tog.HitboxShake.Value and Vector3.new(0, 0, 0) or Vector3.new(math.random(-50, 50) / 50, math.random(-50, 50) / 50, math.random(-50, 50) / 50)
-	lRoot.Velocity = dir * (45 + dist * 10) + shake
+	lRoot.CFrame = CFrame.new(pos, target.Position)
 end
 
 local function appLegit()
@@ -1030,15 +1028,11 @@ table.insert(conns, run.Heartbeat:Connect(function()
 			local lChar = lp.Character
 			local lRoot = lChar and lChar:FindFirstChild("HumanoidRootPart")
 			if lChar and lRoot then
-				local oldVel = lRoot.Velocity
+				local oldCF = lRoot.CFrame
 				appBlat()
 				run.RenderStepped:Wait()
 				if hitActive then
-					lRoot.Velocity = oldVel
-				end
-				run.Stepped:Wait()
-				if hitActive then
-					lRoot.Velocity = oldVel + Vector3.new(0, 0.1, 0)
+					lRoot.CFrame = oldCF
 				end
 			end
 		end
