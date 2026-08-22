@@ -93,6 +93,11 @@ cbGb:AddToggle("PunchAimbot", {
 	Default = false,
 })
 
+cbGb:AddToggle("AutoPunch", {
+	Text = "Auto Punch",
+	Default = false,
+})
+
 cbGb:AddToggle("VisualFOV", {
 	Text = "Visual FOV",
 	Default = false,
@@ -725,7 +730,7 @@ local function monitorKiller(k)
 				if lRoot and root.Parent then
 					local diff = lRoot.Position - root.Position
 					local dist = diff.Magnitude
-					local limit = kAttacking[k] and 22 or 15
+					local limit = opt.FOVSize.Value
 					if dist <= limit then
 						local facing = true
 						if tog.FacingCheck.Value then
@@ -745,7 +750,7 @@ local function monitorKiller(k)
 								task.spawn(function()
 									local oldCF = lRoot.CFrame
 									appBlat()
-									run.RenderStepped:Wait()
+									task.wait(0.08)
 									lRoot.CFrame = oldCF
 								end)
 							end
@@ -987,7 +992,7 @@ local function appBlat()
 	local lRoot = lChar and lChar:FindFirstChild("HumanoidRootPart")
 	if not lRoot or not (tog.AntiBait.Value or tog.BaitLunge.Value) then return end
 	local target, dist = getCls()
-	if not target then return end
+	if not target or dist > opt.FOVSize.Value then return end
 	local offsets
 	local method = opt.AntiBaitMethod.Value
 	if method == "Blatant" then
@@ -1012,7 +1017,7 @@ local function appLegit()
 	local hum = lChar and lChar:FindFirstChildOfClass("Humanoid")
 	if not lRoot or not hum or not tog.AntiBait.Value then return end
 	local target, dist = getCls()
-	if not target then return end
+	if not target or dist > opt.FOVSize.Value then return end
 	local offsets
 	local method = opt.AntiBaitMethod.Value
 	if method == "Blatant" then
@@ -1041,11 +1046,20 @@ table.insert(conns, run.Heartbeat:Connect(function()
 			if lChar and lRoot then
 				local oldCF = lRoot.CFrame
 				appBlat()
-				run.RenderStepped:Wait()
+				task.wait(0.08)
 				if hitActive then
 					lRoot.CFrame = oldCF
 				end
 			end
+		end
+	end
+end))
+
+table.insert(conns, run.Heartbeat:Connect(function()
+	if tog.AutoPunch.Value then
+		local target, dist = getCls()
+		if target and dist <= 5 then
+			rs.Modules.Network.Network.RemoteEvent:FireServer("UseActorAbility", {"Punch"})
 		end
 	end
 end))
