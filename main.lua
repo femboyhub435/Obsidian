@@ -737,6 +737,14 @@ local function monitorKiller(k)
 						end
 						if facing then
 							if tog.AntiBait.Value and not fndHb(k) then return end
+							if tog.BaitLunge.Value then
+								task.spawn(function()
+									local oldCF = lRoot.CFrame
+									appBlat()
+									run.RenderStepped:Wait()
+									lRoot.CFrame = oldCF
+								end)
+							end
 							rs.Modules.Network.Network.RemoteEvent:FireServer("UseActorAbility", {"Block"})
 						end
 					end
