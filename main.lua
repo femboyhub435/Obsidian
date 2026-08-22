@@ -720,7 +720,6 @@ local function monitorKiller(k)
 				task.delay(0.8, function()
 					kAttacking[k] = false
 				end)
-				task.wait(0.07)
 				local lChar = lp.Character
 				local lRoot = lChar and lChar:FindFirstChild("HumanoidRootPart")
 				if lRoot and root.Parent then
@@ -728,6 +727,12 @@ local function monitorKiller(k)
 					local dist = diff.Magnitude
 					local limit = kAttacking[k] and 22 or 15
 					if dist <= limit then
+						if dist > 12 and tog.FacingCheck.Value then
+							task.wait(0.04)
+							if not (root.Parent and lRoot.Parent) then return end
+							diff = lRoot.Position - root.Position
+							dist = diff.Magnitude
+						end
 						local facing = true
 						if tog.FacingCheck.Value then
 							local dotLimit = math.cos(math.rad(opt.KillerFOV.Value / 2))
@@ -736,7 +741,7 @@ local function monitorKiller(k)
 							local checkDir = vel.Magnitude > 3 and (lv * 0.6 + vel.Unit * 0.4).Unit or lv
 							facing = checkDir:Dot(diff.Unit) >= dotLimit
 						end
-						if facing then
+						if facing and dist <= limit then
 							if tog.AntiBait.Value and not fndHb(k) then return end
 							rs.Modules.Network.Network.RemoteEvent:FireServer("UseActorAbility", {"Block"})
 						end
